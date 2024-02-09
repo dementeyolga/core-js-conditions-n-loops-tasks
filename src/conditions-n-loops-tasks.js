@@ -426,23 +426,35 @@ function rotateMatrix(matrix) {
  *  [2, 9, 5, 9]    => [2, 5, 9, 9]
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
+
 function sortByAsc(arr) {
-  const sorted = [...arr];
+  const arr1 = arr;
+  if (arr1.length <= 1) return arr1;
 
-  for (let i = 1; i < sorted.length; i += 1) {
-    const current = sorted[i];
+  const pivotInd = Math.floor(Math.random() * arr1.length);
+  const pivot = arr1[pivotInd];
 
-    let eventIndex = i;
+  const left = [];
+  const right = [];
 
-    for (let j = i - 1; i >= 0 && sorted[j] > current; j -= 1) {
-      sorted[j + 1] = sorted[j];
-      eventIndex = j;
+  for (let i = 0; i < arr1.length; i += 1) {
+    if (i !== pivotInd) {
+      if (arr1[i] <= pivot) {
+        left[left.length] = arr1[i];
+      }
+      if (arr1[i] > pivot) {
+        right[right.length] = arr1[i];
+      }
     }
-
-    sorted[eventIndex] = current;
   }
 
-  return sorted;
+  const result = [...sortByAsc(left), pivot, ...sortByAsc(right)];
+
+  for (let i = 0; i < arr1.length; i += 1) {
+    arr1[i] = result[i];
+  }
+
+  return arr1;
 }
 
 /**
@@ -462,8 +474,24 @@ function sortByAsc(arr) {
  *  '012345', 3 => '024135' => '043215' => '031425'
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
-function shuffleChar(/* str, iterations */) {
-  throw new Error('Not implemented');
+function shuffleChar(str, iterations) {
+  const it = iterations % 36;
+  let result = str;
+
+  for (let n = 0; n < it; n += 1) {
+    let odd = '';
+    let even = '';
+    for (let i = 0; i < str.length; i += 1) {
+      if (i % 2) {
+        odd += result[i];
+      } else {
+        even += result[i];
+      }
+    }
+    result = even + odd;
+  }
+
+  return result;
 }
 
 /**
@@ -483,8 +511,53 @@ function shuffleChar(/* str, iterations */) {
  * @param {number} number The source number
  * @returns {number} The nearest larger number, or original number if none exists.
  */
-function getNearestBigger(/* number */) {
-  throw new Error('Not implemented');
+function getNearestBigger(number) {
+  let str = number.toString();
+  const arr = [...str];
+
+  let swapInd;
+
+  for (let i = arr.length - 1; i >= 0; i -= 1) {
+    if (i !== 0 && arr[i - 1] < arr[i]) {
+      swapInd = i - 1;
+      break;
+    }
+  }
+
+  if (swapInd) {
+    let minGreater = arr[swapInd + 1];
+
+    for (let i = swapInd + 1; i < arr.length; i += 1) {
+      if (arr[i] > arr[swapInd] && arr[i] < minGreater) {
+        minGreater = i;
+      }
+    }
+
+    const rightSwap = arr[minGreater];
+    arr[minGreater] = arr[swapInd];
+    arr[swapInd] = rightSwap;
+
+    const leftPart = arr.slice(0, swapInd + 1);
+    const rightPart = arr.slice(swapInd + 1);
+
+    const sorted = sortByAsc(rightPart);
+
+    let rightPartSorted = '';
+    for (let i = 0; i < sorted.length; i += 1) {
+      rightPartSorted += sorted[i];
+    }
+
+    str = '';
+
+    for (let i = 0; i < leftPart.length; i += 1) {
+      str += leftPart[i];
+    }
+    console.log(str, rightPartSorted);
+
+    str += rightPartSorted;
+  }
+
+  return +str;
 }
 
 module.exports = {
