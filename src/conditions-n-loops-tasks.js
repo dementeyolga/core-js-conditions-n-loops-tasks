@@ -129,6 +129,9 @@ function convertToRomanNumerals(num) {
   };
 
   if (num <= 10) return nums[num];
+
+  let first = 'X';
+  while()
   return 'X'.repeat(+num.toString()[0]) + nums[+num.toString()[1]];
 }
 
