@@ -512,36 +512,42 @@ function shuffleChar(str, iterations) {
  * @returns {number} The nearest larger number, or original number if none exists.
  */
 function getNearestBigger(number) {
-  let str = number.toString();
+  let str = `${number}`;
   const arr = [...str];
 
-  let swapInd;
+  let swapInd = null;
 
   for (let i = arr.length - 1; i >= 0; i -= 1) {
-    if (i !== 0 && arr[i - 1] < arr[i]) {
+    if (i >= 0 && arr[i - 1] < arr[i]) {
       swapInd = i - 1;
       break;
     }
   }
 
   if (swapInd) {
-    let minGreater = arr[swapInd + 1];
+    let minGreaterIndex = swapInd + 1;
 
-    for (let i = swapInd + 1; i < arr.length; i += 1) {
-      if (arr[i] > arr[swapInd] && arr[i] < minGreater) {
-        minGreater = i;
+    for (let i = minGreaterIndex + 1; i < arr.length; i += 1) {
+      if (arr[i] > arr[swapInd] && arr[i] < arr[minGreaterIndex]) {
+        minGreaterIndex = i;
       }
     }
 
-    const rightSwap = arr[minGreater];
-    arr[minGreater] = arr[swapInd];
+    const rightSwap = arr[minGreaterIndex];
+    arr[minGreaterIndex] = arr[swapInd];
     arr[swapInd] = rightSwap;
 
-    const leftPart = arr.slice(0, swapInd + 1);
-    const rightPart = arr.slice(swapInd + 1);
+    const leftPart = [];
+    for (let i = 0; i <= swapInd; i += 1) {
+      leftPart[i] = arr[i];
+    }
+
+    const rightPart = [];
+    for (let i = swapInd + 1; i < arr.length; i += 1) {
+      rightPart[i - (swapInd + 1)] = arr[i];
+    }
 
     const sorted = sortByAsc(rightPart);
-
     let rightPartSorted = '';
     for (let i = 0; i < sorted.length; i += 1) {
       rightPartSorted += sorted[i];
@@ -552,7 +558,6 @@ function getNearestBigger(number) {
     for (let i = 0; i < leftPart.length; i += 1) {
       str += leftPart[i];
     }
-    console.log(str, rightPartSorted);
 
     str += rightPartSorted;
   }
